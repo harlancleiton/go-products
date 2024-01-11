@@ -30,8 +30,8 @@ type ServerHttpConfig struct {
 }
 
 type Config struct {
-	Database DatabaseConfig
-	Server   ServerHttpConfig
+	Database DatabaseConfig   `mapstructure:",squash"`
+	Server   ServerHttpConfig `mapstructure:",squash"`
 }
 
 func LoadConfig(path string) (*Config, error) {
