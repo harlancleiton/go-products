@@ -12,6 +12,7 @@ type User struct {
 func NewUser(db *gorm.DB) *User {
 	return &User{DB: db}
 }
+
 func (u *User) Create(user *entity.User) error {
 	result := u.DB.Create(user)
 	if result.Error != nil {
