@@ -1,7 +1,35 @@
 package main
 
-import "fmt"
+import (
+	"net/http"
+
+	"github.com/harlancleiton/go-products/configs"
+	"github.com/harlancleiton/go-products/internal/entity"
+	"github.com/harlancleiton/go-products/internal/infra/database"
+	"github.com/harlancleiton/go-products/internal/infra/webserver/handler"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+
+	config, err := configs.LoadConfig(".")
+
+	if err != nil {
+		panic(err)
+	}
+
+	db, err := gorm.Open(sqlite.Open("products.db"), &gorm.Config{})
+
+	if err != nil {
+		panic(err)
+	}
+
+	db.AutoMigrate(&entity.Product{}, &entity.User{})
+
+	productDb := database.NewProduct(db)
+	productHandler := handler.NewProductHandler(productDb)
+
+	http.HandleFunc("/products", productHandler.CreateProduct)
+	http.ListenAndServe(":"+config.Server.Port, nil)
 }
