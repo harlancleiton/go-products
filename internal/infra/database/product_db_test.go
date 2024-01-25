@@ -101,7 +101,7 @@ func TestUpdateProduct(
 	newRandomProductPrice := rand.Float64()
 	productFound.Name = newRandomProductName
 	productFound.Price = newRandomProductPrice
-	err = productDb.Update(*productFound)
+	err = productDb.Update(productFound)
 	assert.NoError(t, err)
 
 	productFound, err = productDb.FindByID(product.ID.String())
