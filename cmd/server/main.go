@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/harlancleiton/go-products/configs"
 	"github.com/harlancleiton/go-products/internal/entity"
 	"github.com/harlancleiton/go-products/internal/infra/database"
@@ -12,7 +14,6 @@ import (
 )
 
 func main() {
-
 	config, err := configs.LoadConfig(".")
 
 	if err != nil {
@@ -30,6 +31,9 @@ func main() {
 	productDb := database.NewProduct(db)
 	productHandler := handler.NewProductHandler(productDb)
 
-	http.HandleFunc("/products", productHandler.CreateProduct)
-	http.ListenAndServe(":"+config.Server.Port, nil)
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Post("/products", productHandler.CreateProduct)
+
+	http.ListenAndServe(":"+config.Server.Port, r)
 }
