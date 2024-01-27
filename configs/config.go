@@ -24,7 +24,7 @@ type DatabaseConfig struct {
 
 type ServerHttpConfig struct {
 	Port         string `mapstructure:"PORT"`
-	JwtSecret    string `mapstruct:"JWT_SECRET"`
+	JwtSecret    string `mapstructure:"JWT_SECRET"`
 	JwtExpiresIn int    `mapstructure:"JWT_EXPIRES_IN"`
 	TokenAuth    *jwtauth.JWTAuth
 }

@@ -34,8 +34,12 @@ func main() {
 	userDb := database.NewUser(db)
 	userHandler := handler.NewUserHandler(userDb)
 
+	authHandler := handler.NewAuthHandler(config.Server.TokenAuth, config.Server.JwtExpiresIn, userDb)
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+
+	r.Post("/login", authHandler.Login)
 
 	r.Post("/users", userHandler.CreateUser)
 
