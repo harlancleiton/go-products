@@ -31,8 +31,14 @@ func main() {
 	productDb := database.NewProduct(db)
 	productHandler := handler.NewProductHandler(productDb)
 
+	userDb := database.NewUser(db)
+	userHandler := handler.NewUserHandler(userDb)
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+
+	r.Post("/users", userHandler.CreateUser)
+
 	r.Post("/products", productHandler.CreateProduct)
 	r.Get("/products/{id}", productHandler.GetProduct)
 	r.Get("/products", productHandler.GetProducts)

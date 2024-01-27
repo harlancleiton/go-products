@@ -5,7 +5,7 @@ import (
 )
 
 type UserInterface interface {
-	CreateUser(user *entity.User) error
+	Create(user *entity.User) error
 	FindByEmail(email string) (*entity.User, error)
 }
 
