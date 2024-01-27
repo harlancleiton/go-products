@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/jwtauth"
 	"github.com/harlancleiton/go-products/configs"
 	"github.com/harlancleiton/go-products/internal/entity"
 	"github.com/harlancleiton/go-products/internal/infra/database"
@@ -38,16 +39,22 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 
 	r.Post("/login", authHandler.Login)
 
 	r.Post("/users", userHandler.CreateUser)
 
-	r.Post("/products", productHandler.CreateProduct)
-	r.Get("/products/{id}", productHandler.GetProduct)
-	r.Get("/products", productHandler.GetProducts)
-	r.Put("/products/{id}", productHandler.UpdateProduct)
-	r.Delete("/products/{id}", productHandler.DeleteProduct)
+	r.Route("/products", func(r chi.Router) {
+		r.Use(jwtauth.Verifier(config.Server.TokenAuth))
+		r.Use(jwtauth.Authenticator)
+
+		r.Post("/", productHandler.CreateProduct)
+		r.Get("/{id}", productHandler.GetProduct)
+		r.Get("/", productHandler.GetProducts)
+		r.Put("/{id}", productHandler.UpdateProduct)
+		r.Delete("/{id}", productHandler.DeleteProduct)
+	})
 
 	http.ListenAndServe(":"+config.Server.Port, r)
 }
