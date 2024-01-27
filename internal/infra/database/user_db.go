@@ -14,11 +14,8 @@ func NewUser(db *gorm.DB) *User {
 }
 
 func (u *User) Create(user *entity.User) error {
-	result := u.DB.Create(user)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	err := u.DB.Create(user).Error
+	return err
 }
 
 func (u *User) FindByEmail(email string) (*entity.User, error) {
